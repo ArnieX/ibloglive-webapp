@@ -1,5 +1,5 @@
 # ibloglive-webapp
-Lightweight live blogging service client and server. Good for text and image live coverage of events, keynotes etc. it was developed for live coverage of Apple's events and keynotes. System was already tested under heavy load of more than 20000 concurrent viewers.
+<b>Lightweight LIVE Blogging</b> application <b>client</b> and <b>server</b>. Good for text and image live coverage of events, keynotes etc. it was developed for live coverage of Apple's events and keynotes. Solution was already tested under heavy load of more than 20000 concurrent viewers.
 
 It is also suitable to be used as personal blogging solution as you can see on one of the links below.
 
@@ -9,15 +9,15 @@ It is also suitable to be used as personal blogging solution as you can see on o
     http://blog.geeksoul.cz [My personal blog - Czech Republic]
 
 ### How to install
-    1, Copy admin and client folders to your server.
+    1, Copy <b>admin</b> and <b>client</b> folders to your server.
     2, Create database on your server named ibloglive (or name it as you like to)
-    3, Create tables in your database admins, settings, stream, database model is in file databasemodel.md
-    4, Change table name in client [client/ibloglive.html] and admin [admin/index.html]
-    5, Change database login details in dbconnect.php in both admin and client folders
-    6, Insert line into admins table username and password (in sha1)
-    7, In your browser now open admin/index.html and login
-    8, In your browser now open client/ibloglive.html
-    9, Write message in admin adn you should see it shortly in client
+    3, Create tables in your database <b>admins</b>, <b>settings</b>, <b>stream</b>, database model is in file databasemodel.md
+    4, Change table name in client <b>[client/ibloglive.html]</b> and admin <b>[admin/index.html]</b>
+    5, Change database login details in <b>dbconnect.php</b> in both admin and client folders
+    6, Insert line into <b>admins</b> table username and password <b>[password as sha1 hash]</b>
+    7, In your browser now open <b>admin/index.html</b> and login
+    8, In your browser now open <b>client/ibloglive.html</b>
+    9, Write message in admin and you should see it shortly in client
 
 ### What I expect from contributors
   This system was barely perfect, but it always made a good way throught extreme load during Apple's events. Our top load was above 20000 concurent clients and that is quite good as such. But still as I said this system was barely perfect, it lacks many functionality which can go in there.
