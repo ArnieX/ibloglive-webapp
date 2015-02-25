@@ -12,8 +12,8 @@ http://blog.geeksoul.cz [My personal blog - Czech Republic]
 
 ### Prerequisities
 
-        PHP at least 5 processes better to have 10 or more, depends on how many concurrent viewers you expect
-        MySQL Database
+        - PHP at least 5 processes better to have 10 or more, depends on how many concurrent viewers you expect
+        - MySQL Database
 
 Application is able to run on many hosting providers. But for better performace it is recommended to have own server either dedicated or VPS, or run it on some cloud based servers like Amazon or alike. All depends on how many concurrent viewers you expect. With every 5 PHP processes you might expect handling around 10000 concurrent viewers.
 
