@@ -1,0 +1,141 @@
+body {
+	background-color: #fff;
+	font-family: Helvetica;
+	color: black;
+	font-size: 13px;
+}
+
+textarea {
+    resize: none;
+}
+
+#moregrey {
+	color: black;
+}
+
+#blue {
+	color: #13abeb;
+}
+
+hr {
+	border: 0px;
+	border-bottom: 1px dotted #ccc;
+	height: 0px;
+}
+
+a {
+	color: #00aeed;
+	text-decoration: underline;
+	font-family: Helvetica;
+}
+
+a:hover {
+	color: #4e4e4e;
+	text-decoration: none;
+	font-family: Helvetica;
+}
+
+.trueheader {
+	background-color: #00aeff;
+	height: 50px;
+	width: auto;
+	margin-left: -0px;
+	margin-top: -10px;
+	margin-right: -0px;
+	text-align: left;
+}
+
+.header {
+	background-color: #00aeff;
+	height: 10px;
+	width: auto;
+	margin-left: -8px;
+	margin-top: -10px;
+	margin-right: -8px;
+	text-align: right;
+}
+
+.header_footer {
+	background-color: #00aeff;
+	height: 10px;
+	width: auto;
+	margin-left: -8px;
+	margin-bottom: -10px;
+	margin-right: -8px;
+	text-align: right;
+}
+
+.message1 {
+	background-color: #f3f3f3;
+	height: auto;
+	width: auto;
+	margin-left: -8px;
+	margin-top: 0px;
+	margin-right: -8px;
+	text-align: left;
+}
+
+.message2 {
+	background-color: #fff;
+	height: auto;
+	width: auto;
+	margin-left: -8px;
+	margin-top: 0px;
+	margin-right: -8px;
+	text-align: left;
+}
+
+.message_separator {
+	background-color: #b1b1b1;
+	height: 1px;
+	width: auto;
+	margin-left: -8px;
+	margin-top: 0px;
+	margin-right: -8px;
+}
+
+.loginblock {
+	width: 1024px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+}
+
+.loginblock input {
+	width: 500px;
+	height: 50px;
+	font-size: 20pt;
+	color: #4e4e4e;
+}
+
+.submitblock {
+	width: 1024px;
+	text-align: center;
+}
+
+#submit {
+	width: 128px;
+	height: 50px;
+	background-image: -webkit-linear-gradient(#00bbff 0%, #0085d7 100%);
+	border: 2px solid white;
+	border-radius: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	color: white;
+	font-size: 12pt;
+	text-shadow: 0px -1px 0px #004096;
+}
+
+#submit:hover {
+	width: 128px;
+	height: 50px;
+	background-image: -webkit-linear-gradient(#0085d7 0%, #00bbff 100%);
+	border: 2px solid white;
+	border-radius: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	color: white;
+	font-size: 12pt;
+	text-shadow: 0px -1px 0px #004096;
+}
+

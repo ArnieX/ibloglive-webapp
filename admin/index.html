@@ -1,0 +1,383 @@
+<!doctype html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<title>iBlogLive - Admin</title>
+<script>
+
+var tablename = "stream_appliste";
+var tablenamestats = "statistics_appliste";
+var idcka = [0];
+
+if(!String.linkify) {
+    String.prototype.linkify = function() {
+
+        // http://, https://, ftp://
+        var urlPattern = /\[([^\[\]]+)\]\(([^\(\)]+)\)/gim;
+
+        // Email addresses *** here I've changed the expression ***
+        var emailAddressPattern = /(([a-zA-Z0-9_\-\.]+)@[a-zA-Z_]+?(?:\.[a-zA-Z]{2,6}))+/gim;
+        
+        var markdownboldx1 = /\*\*([^\*]+)\*\*/g;
+        
+        var markdownemx1 = /\*([^\*]+)\*/g;
+        
+        var twitteruser = /(^|\s)@(\w+)/gim;
+        
+        var hastag = /(^|\s)#([^ ]+)/gim;
+        
+        var image = /\b(?!\")(https?):\/\/([^\s\\]+)+\.(png|jpe?g|gif|tiff|bmp)(?!\")/gim;
+
+        return this
+        	.replace(urlPattern, '<a target="_blank" href="$2">$1</a>')
+            .replace(emailAddressPattern, '<a target="_blank" href="mailto:$1">$1</a>')
+            .replace(twitteruser, '<a target="_blank" href="http://twitter.com/$2">$&</a>')
+            .replace(hastag, '<span style="color:grey;">$&</span>')
+            .replace(image, '<img src="$&" width="350">')
+            .replace(markdownboldx1, '<strong>$1</strong>')
+            .replace(markdownemx1, '<em>$1</em>')
+            .replace("\n",'<br>')
+            .replace("\r",'<br>');
+    };
+}
+
+function getMessages() {
+	
+	var xmlhttp;
+  
+		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
+		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
+			
+			xmlhttp.onreadystatechange=function() {
+  			
+  			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	    		
+	    		var responseObject = JSON.parse(xmlhttp.responseText);
+	    		
+	    		//document.getElementById("keynote").innerHTML = "";
+	    		
+	    		if (idcka.length <= 0) {
+		    	
+		    	idcka = [0];
+		    		
+	    		} else {}
+	    		
+	    		for (i = 0; i < responseObject.stream.length; i++) {
+			    		
+			    		document.getElementById("keynote").innerHTML = "<br><button type='button' class='btn btn-danger delete' style='position:absolute; margin-left: -100px; margin-top: 2px;' onclick='removeMessage(&#39;"+responseObject.stream[i].id+"&#39;);'><i class='icon-trash icon-white'></i><span>Smazat</span></button><div class='message2'><br><span id='blue' style='margin-left: 10px;position:absolute;margin-top:-10px;'>"+responseObject.stream[i].date+"</span><br><br><div id='moregrey' style='margin-right: 20px;margin-left: 50px; margin-top:-45px; text-align:justify; width:auto;'>"+responseObject.stream[i].text+"</div><div style='height:5px;'></div></div><br><div class='message_separator'></div>"+document.getElementById("keynote").innerHTML;
+		    		
+		    		idcka.push(responseObject.stream[i].id);
+		    		
+	    		}
+	    		
+	    		//scroll(0,-10);
+	    		
+    		}
+ 		 }
+ 		 
+ 		 var url = "supermancore.php";
+ 		 var params = "getStream=yes&idcka="+idcka+"&tablename="+tablename+"&tablenamestats="+tablenamestats+"";
+ 		 xmlhttp.open("POST", url, true);
+
+ 		 //Send the proper header information along with the request
+ 		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ 		 
+ 		 xmlhttp.send(params);
+	
+}
+
+function logMeIn() {
+	
+	var xmlhttp;
+  
+		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
+		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
+			
+			xmlhttp.onreadystatechange=function() {
+  			
+  			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	    		
+	    		var responseObject = JSON.parse(xmlhttp.responseText);
+	    		
+	    		if (responseObject[0] == 1) {
+	    		
+	    		document.getElementById("sendingform").style.display = "block";
+	    		document.getElementById("loginform").style.display = "none";
+	    		getMessages();
+	    				    		
+	    		}
+	    		
+	    		
+    		}
+ 		 }
+ 		 
+ 		 var url = "supermanadmin.php";
+ 		 var params = "login=yes&username="+document.getElementById("username").value+"&password="+document.getElementById("password").value+"";
+ 		 xmlhttp.open("POST", url, true);
+
+ 		 //Send the proper header information along with the request
+ 		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ 		 
+ 		 xmlhttp.send(params);
+	
+}
+
+function sendNewMessage() {
+	
+	var xmlhttp;
+  
+		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
+		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
+			
+			xmlhttp.onreadystatechange=function() {
+  			
+  			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	    		
+	    		var responseObject = JSON.parse(xmlhttp.responseText);
+	    		
+	    		if (responseObject[0] != 1) {
+	    		
+	    		document.getElementById("sendingform").style.display = "none";
+	    		document.getElementById("loginform").style.display = "block";
+	    				    		
+	    		} else {
+		    		
+		    	document.getElementById("textarea").value = "";
+		    	getMessages();
+		    		
+	    		}
+	    		
+	    		
+    		}
+ 		 }
+ 		 
+ 		 var url = "supermanadmin.php";
+ 		 var params = "addNew=yes&text="+encodeURIComponent(document.getElementById("textarea").value.linkify())+"&tablename="+tablename+"";
+ 		 xmlhttp.open("POST", url, true);
+
+ 		 //Send the proper header information along with the request
+ 		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ 		 
+ 		 xmlhttp.send(params);
+	
+}
+
+function amIlogedIn() {
+	
+	var xmlhttp;
+  
+		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
+		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
+			
+			xmlhttp.onreadystatechange=function() {
+  			
+  			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	    		
+	    		var responseObject = JSON.parse(xmlhttp.responseText);
+	    		
+	    		if (responseObject[0] != 1) {
+	    		
+	    		document.getElementById("sendingform").style.display = "none";
+	    		document.getElementById("loginform").style.display = "block";
+	    				    		
+	    		} else {
+		    		
+	    		document.getElementById("sendingform").style.display = "block";
+	    		document.getElementById("loginform").style.display = "none";
+		    	getMessages();
+		    	
+	    		}
+	    		
+	    		
+    		}
+ 		 }
+ 		 
+ 		 var url = "supermanadmin.php";
+ 		 var params = "amIlogedIn=yes";
+ 		 xmlhttp.open("POST", url, true);
+
+ 		 //Send the proper header information along with the request
+ 		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ 		 
+ 		 xmlhttp.send(params);
+	
+}
+
+function removeMessage(messageid) {
+	
+	var xmlhttp;
+  
+		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
+		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
+			
+			xmlhttp.onreadystatechange=function() {
+  			
+  			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	    		
+	    		var responseObject = JSON.parse(xmlhttp.responseText);
+	    		
+	    		if (responseObject[0] != 1) {
+	    		
+	    		document.getElementById("sendingform").style.display = "none";
+	    		document.getElementById("loginform").style.display = "block";
+	    				    		
+	    		} else {
+		    	
+		    	document.getElementById("keynote").innerHTML = "";
+		    	idcka = [0];
+		    	getMessages();
+		    		
+	    		}
+	    		
+	    		
+    		}
+ 		 }
+ 		 
+ 		 var url = "supermanadmin.php";
+ 		 var params = "removeMessage=yes&idzpravy="+messageid+"&tablename="+tablename+"";
+ 		 xmlhttp.open("POST", url, true);
+
+ 		 //Send the proper header information along with the request
+ 		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ 		 
+ 		 xmlhttp.send(params);
+	
+}
+
+function setNewInterval() {
+	
+	var xmlhttp;
+  
+		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
+		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
+			
+			xmlhttp.onreadystatechange=function() {
+  			
+  			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	    		
+	    		var responseObject = JSON.parse(xmlhttp.responseText);
+	    		
+	    		if (responseObject[0] != 1) {
+	    		
+	    		document.getElementById("sendingform").style.display = "none";
+	    		document.getElementById("loginform").style.display = "block";
+	    				    		
+	    		} else {
+		    		
+		    	document.getElementById("newinterval").value = "Nastaveno...";
+		    	setTimeout(function(){document.getElementById("newinterval").value = "";}, 600);
+		    		
+	    		}
+	    		
+	    		
+    		}
+ 		 }
+ 		 
+ 		 var url = "supermanadmin.php";
+ 		 var params = "changeInterval=yes&newinterval="+document.getElementById("newinterval").value+"";
+ 		 xmlhttp.open("POST", url, true);
+
+ 		 //Send the proper header information along with the request
+ 		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ 		 
+ 		 xmlhttp.send(params);
+	
+}
+
+function addTag(tag) {
+	
+	document.getElementById("textarea").value = document.getElementById("textarea").value+""+tag+"";
+	
+}
+var width = 0;
+
+function addImg(imgGet) {
+	
+	var img = new Image(); img.src = imgGet;
+	
+	img.addEventListener('load', function() {
+		
+		if (img.width > 300) {
+			
+			width = 300;
+			
+		} else {
+			
+			width = img.width;
+			
+		}
+		
+		document.getElementById("textarea").value = document.getElementById("textarea").value+"<img src=\""+imgGet+"\" width=\""+width+"\">";
+		
+	}, false);		
+	
+}
+
+</script>
+<!-- Bootstrap CSS Toolkit styles -->
+<link rel="stylesheet" href="css/bootstrap.css">
+<!-- Generic page styles -->
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/jquery.fileupload-ui.css">
+</head>
+<body onload="amIlogedIn();">
+<div class="trueheader"><span style="font-size: 20pt; color:white; position:absolute; margin-top: 15px; margin-left: 10px;">iBlogLive - Administrace</span></div>
+<div class="loginblock" style="text-align: center; margin-top:100px;">
+	<form id="loginform" onsubmit="logMeIn(); return false">
+	<input type="text" id="username" value="" placeholder="Uživatelské jméno"><br><br>
+	<input type="password" id="password" value="" placeholder="Přihlašovací heslo"><br>
+	<span class="btn btn-success fileinput-button" style="text-align:center; width: 50px; margin-left:470px; margin-right:auto;">
+                    <span>Přihlásit</span>
+                    <input type="submit">
+    </span>
+	</form>
+</div>
+	
+<div class="loginblock" style="text-align: center; margin-top:-50px; display:none;" id="sendingform">
+	<form onsubmit="sendNewMessage(); return false">
+	<textarea id="textarea" style="width: 900px; height: 200px;"></textarea>
+	<br>
+	 <div class="row fileupload-buttonbar" style="margin-left:55px;">
+	<span class="btn btn-success fileinput-button">
+                    <span>Odeslat</span>
+                    <input type="submit">
+    </span>
+    <div style="margin-top:-0px;">
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:-440px;" onclick="addTag('<img src=&quot;adresa_obrazku&quot; width=&quot;350&quot;>');">
+                    <span>Obrázek</span>
+    </button>
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<strong></strong>');">
+    				<span>Tučně</span>
+    </button>
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<em></em>');">
+    				<span>Kurzíva</span>
+    </button>
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<a href=&quot;http_url&quot; target=&quot;_blank&quot;>Text odkazu</a>');">
+    				<span>Odkaz</span>
+    </button>
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<a href=&quot;http://www.ica.cz/?utm&#95;source=appliste&amp;utm&#95;medium=keynote_link&amp;utm&#95;campaign=apple&#95;keynote&quot; target=&quot;_blank&quot;>První certifikační autorita, a.s.</a>');">
+    				<span>I.CA</span>
+    </button>
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<br>');">
+    				<span>Odřádkování</span>
+    </button>
+	</div>
+    <div style="margin-top:-37px; margin-left: 580px;">
+    <input id="newinterval" type="text" value="" placeholder="Časový interval dotazů v ms" style="margin-top: 5px; width: 168px;" onfocus="this.value = 15000;">
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="setNewInterval();">
+    				<span>Nastavit</span>
+    </button>
+    </div>
+	 </div>
+	</form>
+<br>
+<br>
+<div class='message_separator'></div>
+<br><br>
+<div style="margin-left:60px;">
+<div id="keynote" style="width:1024px; margin-left:auto; margin-right:auto;"></div>
+</div>
+</div>
+</div>
+</body>
+</html>

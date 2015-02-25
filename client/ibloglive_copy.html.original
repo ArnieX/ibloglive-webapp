@@ -1,0 +1,16 @@
+<!doctype html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<meta name="viewport" content="width=240, height=320, user-scalable=no,
+initial-scale=1, minimum-scale=1.0">
+</head>
+<body>
+<div class="header"></div>
+<div id="keynote">
+</div>
+<script>
+function getMessages(){var a;if(window.XMLHttpRequest){a=new XMLHttpRequest}else{a=new ActiveXObject("Microsoft.XMLHTTP")}a.onreadystatechange=function(){if(a.readyState==4&&a.status==200){var b=JSON.parse(a.responseText);if(b.reload[0]!=0){idcka=[0];document.getElementById("keynote").innerHTML=""}clearInterval(hyperval);hyperval=setInterval(function(){getMessages()},b.interval[0]+Math.floor(Math.random()*999));if(idcka.length<=0){idcka=[0]}else{}for(i=0;i<b.stream.length;i++){document.getElementById("keynote").innerHTML="<div class='message2'><br><span id='blue' style='margin-left: 10px;position:absolute;margin-top:-10px;'>"+b.stream[i].date+"</span><br><br><div id='moregrey' style='margin-right: 20px;margin-left: 50px; margin-top:-39px; text-align:justify; width:auto;'>"+b.stream[i].text+"</div><div style='height:5px;'></div></div><div class='message_separator'></div>"+document.getElementById("keynote").innerHTML;idcka.push(b.stream[i].id)}}};var b="supermancore.php";var c="getStream=yes&idcka="+idcka+"&tablename="+tablename+"&tablenamestats="+tablenamestats+"";a.open("POST",b,true);a.setRequestHeader("Content-type","application/x-www-form-urlencoded");a.send(c)}function loadMe(){getMessages()}var idcka=[0];var hyperval=setInterval(function(){getMessages()},1e4+Math.floor(Math.random()*999));var tablename="stream_appliste";var tablenamestats="statistics_appliste";loadMe()
+</script>
+</body>
+</html>

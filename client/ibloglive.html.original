@@ -1,0 +1,87 @@
+<!doctype html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<meta name="viewport" content="width=240, height=320, user-scalable=no,
+initial-scale=1, minimum-scale=1.0">
+</head>
+<body>
+<div class="header"></div>
+<div id="keynote">
+</div>
+<script>
+
+var idcka = [0];
+
+var hyperval = setInterval(function(){getMessages();}, 10000+Math.floor(Math.random()*999));
+
+var tablename = "stream_appliste";
+var tablenamestats = "statistics_appliste";
+
+function getMessages() {
+	
+	var xmlhttp;
+  
+		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
+		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
+			
+			xmlhttp.onreadystatechange=function() {
+  			
+  			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+	    		
+	    		var responseObject = JSON.parse(xmlhttp.responseText);
+	    		
+	    		if (responseObject.reload[0] != 0) {
+		    		
+		    		idcka = [0];
+		    		document.getElementById("keynote").innerHTML = "";
+		    		
+	    		}
+	    		
+	    		clearInterval(hyperval);
+	    		
+	    		hyperval = setInterval(function(){getMessages();}, responseObject.interval[0]+Math.floor(Math.random()*999));
+	    		
+	    		//document.getElementById("keynote").innerHTML = "";
+	    		
+	    		if (idcka.length <= 0) {
+		    	
+		    	idcka = [0];
+		    		
+	    		} else {}
+	    		
+	    		for (i = 0; i < responseObject.stream.length; i++) {
+			    		
+			    		document.getElementById("keynote").innerHTML = "<div class='message2'><br><span id='blue' style='margin-left: 10px;position:absolute;margin-top:-10px;'>"+responseObject.stream[i].date+"</span><br><br><div id='moregrey' style='margin-right: 20px;margin-left: 50px; margin-top:-39px; text-align:justify; width:auto;'>"+responseObject.stream[i].text+"</div><div style='height:5px;'></div></div><div class='message_separator'></div>"+document.getElementById("keynote").innerHTML;
+		    		
+		    		idcka.push(responseObject.stream[i].id);
+		    		
+	    		}
+	    		
+	    		//scroll(0,-10);
+	    		
+    		}
+ 		 }
+ 		 
+ 		 var url = "supermancore.php";
+ 		 var params = "getStream=yes&idcka="+idcka+"&tablename="+tablename+"&tablenamestats="+tablenamestats+"";
+ 		 xmlhttp.open("POST", url, true);
+
+ 		 //Send the proper header information along with the request
+ 		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ 		 
+ 		 xmlhttp.send(params);
+	
+}
+
+function loadMe() {
+	
+	getMessages();
+	
+}
+
+loadMe();
+
+</script>
+</body>
+</html>
