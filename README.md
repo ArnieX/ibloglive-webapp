@@ -35,8 +35,8 @@ This application was barely perfect, but it always made a good way throught extr
     1, Possibility to change messages [it is only possible to remove and rewrite them]
     2, Improve speed, improve way of getting incremental updates from server, used way is probably not the most efficient one
     3, Improve overall speed, means that for sure PHP scripts can be much more efficient, or maybe it is better to use SQLite instead of MySQL, I don't know I have no experiences with different DB systems
-    3, Improve admin to give more options better and more efficient, faster editing tools with maybe live preview etc.
-    4, In administration add possibility to start and manage all running streams on the fly and make it more user friendly to start and stop streams. This will also help for making application a lot more maintenance-free.
+    4, Improve admin to give more options better and more efficient, faster editing tools with maybe live preview etc.
+    5, In administration add possibility to start and manage all running streams on the fly and make it more user friendly to start and stop streams. This will also help for making application a lot more maintenance-free.
 
 ### Feedback
 Please give any feedback how did you use this application, how did you like it and so on. I'm aware that such solution is welcomed as many servers like to do live streams but many good solutions are very expensive.
