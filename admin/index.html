@@ -5,9 +5,15 @@
 <title>iBlogLive - Admin</title>
 <script>
 
-var tablename = "stream_appliste";
-var tablenamestats = "statistics_appliste";
+var tablename = "stream_DB_tablename"; //This is good to specify as you can have multiple streams
+var tablenamestats = "statistics_appliste"; //This was originally here for statistics purposes, but it takes a lot system resources during heavy load
 var idcka = [0];
+
+//Here is custom markdown for automatic recognition of URL's etc. it is
+//probably not the best markdown ever so any improvements are welcome,
+//and currently this happens after message is sent, so not possible to
+//check how it worked out until you see final message. It would be great
+//to have more complex editing tool with live preview.
 
 if(!String.linkify) {
     String.prototype.linkify = function() {
@@ -17,15 +23,15 @@ if(!String.linkify) {
 
         // Email addresses *** here I've changed the expression ***
         var emailAddressPattern = /(([a-zA-Z0-9_\-\.]+)@[a-zA-Z_]+?(?:\.[a-zA-Z]{2,6}))+/gim;
-        
+
         var markdownboldx1 = /\*\*([^\*]+)\*\*/g;
-        
+
         var markdownemx1 = /\*([^\*]+)\*/g;
-        
+
         var twitteruser = /(^|\s)@(\w+)/gim;
-        
+
         var hastag = /(^|\s)#([^ ]+)/gim;
-        
+
         var image = /\b(?!\")(https?):\/\/([^\s\\]+)+\.(png|jpe?g|gif|tiff|bmp)(?!\")/gim;
 
         return this
@@ -41,276 +47,290 @@ if(!String.linkify) {
     };
 }
 
+//This function requests messages from DB
+
 function getMessages() {
-	
+
 	var xmlhttp;
-  
+
 		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
 		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
-			
+
 			xmlhttp.onreadystatechange=function() {
-  			
+
   			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	    		
+
 	    		var responseObject = JSON.parse(xmlhttp.responseText);
-	    		
+
 	    		//document.getElementById("keynote").innerHTML = "";
-	    		
+
 	    		if (idcka.length <= 0) {
-		    	
+
 		    	idcka = [0];
-		    		
+
 	    		} else {}
-	    		
+
 	    		for (i = 0; i < responseObject.stream.length; i++) {
-			    		
+
 			    		document.getElementById("keynote").innerHTML = "<br><button type='button' class='btn btn-danger delete' style='position:absolute; margin-left: -100px; margin-top: 2px;' onclick='removeMessage(&#39;"+responseObject.stream[i].id+"&#39;);'><i class='icon-trash icon-white'></i><span>Smazat</span></button><div class='message2'><br><span id='blue' style='margin-left: 10px;position:absolute;margin-top:-10px;'>"+responseObject.stream[i].date+"</span><br><br><div id='moregrey' style='margin-right: 20px;margin-left: 50px; margin-top:-45px; text-align:justify; width:auto;'>"+responseObject.stream[i].text+"</div><div style='height:5px;'></div></div><br><div class='message_separator'></div>"+document.getElementById("keynote").innerHTML;
-		    		
+
 		    		idcka.push(responseObject.stream[i].id);
-		    		
+
 	    		}
-	    		
+
 	    		//scroll(0,-10);
-	    		
+
     		}
  		 }
- 		 
+
  		 var url = "supermancore.php";
  		 var params = "getStream=yes&idcka="+idcka+"&tablename="+tablename+"&tablenamestats="+tablenamestats+"";
  		 xmlhttp.open("POST", url, true);
 
  		 //Send the proper header information along with the request
  		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- 		 
+
  		 xmlhttp.send(params);
-	
+
 }
 
+//Login function
+
 function logMeIn() {
-	
+
 	var xmlhttp;
-  
+
 		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
 		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
-			
+
 			xmlhttp.onreadystatechange=function() {
-  			
+
   			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	    		
+
 	    		var responseObject = JSON.parse(xmlhttp.responseText);
-	    		
+
 	    		if (responseObject[0] == 1) {
-	    		
+
 	    		document.getElementById("sendingform").style.display = "block";
 	    		document.getElementById("loginform").style.display = "none";
 	    		getMessages();
-	    				    		
+
 	    		}
-	    		
-	    		
+
+
     		}
  		 }
- 		 
+
  		 var url = "supermanadmin.php";
  		 var params = "login=yes&username="+document.getElementById("username").value+"&password="+document.getElementById("password").value+"";
  		 xmlhttp.open("POST", url, true);
 
  		 //Send the proper header information along with the request
  		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- 		 
+
  		 xmlhttp.send(params);
-	
+
 }
 
+//Send message function
+
 function sendNewMessage() {
-	
+
 	var xmlhttp;
-  
+
 		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
 		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
-			
+
 			xmlhttp.onreadystatechange=function() {
-  			
+
   			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	    		
+
 	    		var responseObject = JSON.parse(xmlhttp.responseText);
-	    		
+
 	    		if (responseObject[0] != 1) {
-	    		
+
 	    		document.getElementById("sendingform").style.display = "none";
 	    		document.getElementById("loginform").style.display = "block";
-	    				    		
+
 	    		} else {
-		    		
+
 		    	document.getElementById("textarea").value = "";
 		    	getMessages();
-		    		
+
 	    		}
-	    		
-	    		
+
+
     		}
  		 }
- 		 
+
  		 var url = "supermanadmin.php";
  		 var params = "addNew=yes&text="+encodeURIComponent(document.getElementById("textarea").value.linkify())+"&tablename="+tablename+"";
  		 xmlhttp.open("POST", url, true);
 
  		 //Send the proper header information along with the request
  		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- 		 
+
  		 xmlhttp.send(params);
-	
+
 }
 
+//Function that check if user is logged in, there is session on the server
+
 function amIlogedIn() {
-	
+
 	var xmlhttp;
-  
+
 		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
 		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
-			
+
 			xmlhttp.onreadystatechange=function() {
-  			
+
   			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	    		
+
 	    		var responseObject = JSON.parse(xmlhttp.responseText);
-	    		
+
 	    		if (responseObject[0] != 1) {
-	    		
+
 	    		document.getElementById("sendingform").style.display = "none";
 	    		document.getElementById("loginform").style.display = "block";
-	    				    		
+
 	    		} else {
-		    		
+
 	    		document.getElementById("sendingform").style.display = "block";
 	    		document.getElementById("loginform").style.display = "none";
 		    	getMessages();
-		    	
+
 	    		}
-	    		
-	    		
+
+
     		}
  		 }
- 		 
+
  		 var url = "supermanadmin.php";
  		 var params = "amIlogedIn=yes";
  		 xmlhttp.open("POST", url, true);
 
  		 //Send the proper header information along with the request
  		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- 		 
+
  		 xmlhttp.send(params);
-	
+
 }
 
+//Function that remove specific message for message ID
+
 function removeMessage(messageid) {
-	
+
 	var xmlhttp;
-  
+
 		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
 		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
-			
+
 			xmlhttp.onreadystatechange=function() {
-  			
+
   			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	    		
+
 	    		var responseObject = JSON.parse(xmlhttp.responseText);
-	    		
+
 	    		if (responseObject[0] != 1) {
-	    		
+
 	    		document.getElementById("sendingform").style.display = "none";
 	    		document.getElementById("loginform").style.display = "block";
-	    				    		
+
 	    		} else {
-		    	
+
 		    	document.getElementById("keynote").innerHTML = "";
 		    	idcka = [0];
 		    	getMessages();
-		    		
+
 	    		}
-	    		
-	    		
+
+
     		}
  		 }
- 		 
+
  		 var url = "supermanadmin.php";
  		 var params = "removeMessage=yes&idzpravy="+messageid+"&tablename="+tablename+"";
  		 xmlhttp.open("POST", url, true);
 
  		 //Send the proper header information along with the request
  		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- 		 
+
  		 xmlhttp.send(params);
-	
+
 }
 
+//This function sets an interval on client side how often it should require new messages in ms, this is great during heavy load so you can slow down messages delivery in case you need to.
+
 function setNewInterval() {
-	
+
 	var xmlhttp;
-  
+
 		if (window.XMLHttpRequest) {xmlhttp=new XMLHttpRequest(); }
 		else {xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}
-			
+
 			xmlhttp.onreadystatechange=function() {
-  			
+
   			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	    		
+
 	    		var responseObject = JSON.parse(xmlhttp.responseText);
-	    		
+
 	    		if (responseObject[0] != 1) {
-	    		
+
 	    		document.getElementById("sendingform").style.display = "none";
 	    		document.getElementById("loginform").style.display = "block";
-	    				    		
+
 	    		} else {
-		    		
-		    	document.getElementById("newinterval").value = "Nastaveno...";
+
+		    	document.getElementById("newinterval").value = "Interval was set...";
 		    	setTimeout(function(){document.getElementById("newinterval").value = "";}, 600);
-		    		
+
 	    		}
-	    		
-	    		
+
+
     		}
  		 }
- 		 
+
  		 var url = "supermanadmin.php";
  		 var params = "changeInterval=yes&newinterval="+document.getElementById("newinterval").value+"";
  		 xmlhttp.open("POST", url, true);
 
  		 //Send the proper header information along with the request
  		 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- 		 
+
  		 xmlhttp.send(params);
-	
+
 }
 
+//This function adds tags on end of the text in textarea, like for image, links etc.
+
 function addTag(tag) {
-	
+
 	document.getElementById("textarea").value = document.getElementById("textarea").value+""+tag+"";
-	
+
 }
 var width = 0;
 
 function addImg(imgGet) {
-	
+
 	var img = new Image(); img.src = imgGet;
-	
+
 	img.addEventListener('load', function() {
-		
+
 		if (img.width > 300) {
-			
+
 			width = 300;
-			
+
 		} else {
-			
+
 			width = img.width;
-			
+
 		}
-		
+
 		document.getElementById("textarea").value = document.getElementById("textarea").value+"<img src=\""+imgGet+"\" width=\""+width+"\">";
-		
-	}, false);		
-	
+
+	}, false);
+
 }
 
 </script>
@@ -324,15 +344,15 @@ function addImg(imgGet) {
 <div class="trueheader"><span style="font-size: 20pt; color:white; position:absolute; margin-top: 15px; margin-left: 10px;">iBlogLive - Administrace</span></div>
 <div class="loginblock" style="text-align: center; margin-top:100px;">
 	<form id="loginform" onsubmit="logMeIn(); return false">
-	<input type="text" id="username" value="" placeholder="Uživatelské jméno"><br><br>
-	<input type="password" id="password" value="" placeholder="Přihlašovací heslo"><br>
+	<input type="text" id="username" value="" placeholder="Username"><br><br>
+	<input type="password" id="password" value="" placeholder="Password"><br>
 	<span class="btn btn-success fileinput-button" style="text-align:center; width: 50px; margin-left:470px; margin-right:auto;">
                     <span>Přihlásit</span>
                     <input type="submit">
     </span>
 	</form>
 </div>
-	
+
 <div class="loginblock" style="text-align: center; margin-top:-50px; display:none;" id="sendingform">
 	<form onsubmit="sendNewMessage(); return false">
 	<textarea id="textarea" style="width: 900px; height: 200px;"></textarea>
@@ -343,27 +363,27 @@ function addImg(imgGet) {
                     <input type="submit">
     </span>
     <div style="margin-top:-0px;">
-    <button type="button" class="btn btn-info modal-prev" style="margin-left:-440px;" onclick="addTag('<img src=&quot;adresa_obrazku&quot; width=&quot;350&quot;>');">
-                    <span>Obrázek</span>
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:-440px;" onclick="addTag('<img src=&quot;image_url&quot; width=&quot;350&quot;>');">
+                    <span>Image</span>
     </button>
     <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<strong></strong>');">
-    				<span>Tučně</span>
+    				<span>BOLD</span>
     </button>
     <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<em></em>');">
-    				<span>Kurzíva</span>
+    				<span>i</span>
     </button>
-    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<a href=&quot;http_url&quot; target=&quot;_blank&quot;>Text odkazu</a>');">
-    				<span>Odkaz</span>
+    <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<a href=&quot;http_url&quot; target=&quot;_blank&quot;>Link text</a>');">
+    				<span>Link</span>
     </button>
     <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<a href=&quot;http://www.ica.cz/?utm&#95;source=appliste&amp;utm&#95;medium=keynote_link&amp;utm&#95;campaign=apple&#95;keynote&quot; target=&quot;_blank&quot;>První certifikační autorita, a.s.</a>');">
-    				<span>I.CA</span>
+    				<span>Sponsor URL</span>
     </button>
     <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="addTag('<br>');">
-    				<span>Odřádkování</span>
+    				<span>New line</span>
     </button>
 	</div>
     <div style="margin-top:-37px; margin-left: 580px;">
-    <input id="newinterval" type="text" value="" placeholder="Časový interval dotazů v ms" style="margin-top: 5px; width: 168px;" onfocus="this.value = 15000;">
+    <input id="newinterval" type="text" value="" placeholder="Refresh interval in ms" style="margin-top: 5px; width: 168px;" onfocus="this.value = 15000;">
     <button type="button" class="btn btn-info modal-prev" style="margin-left:0px;" onclick="setNewInterval();">
     				<span>Nastavit</span>
     </button>

@@ -7,15 +7,15 @@ function getStream(){
 	$countremoved = mysql_result(mysql_query("SELECT COUNT(*) FROM `".$_POST['tablename']."` WHERE `ID` IN (".$idcka.") AND `removed` = '1'"),0);
 	$jsonwrapper = array("stream" => array(),"interval" => array(intval($interval['value'])),"reload" => array($countremoved));
 	if ($countremoved != 0) {
-	$query = mysql_query("SELECT * FROM `".$_POST['tablename']."` WHERE `ID` NOT IN (0) AND `removed` != '1' ORDER BY `ID` ASC ");	
+	$query = mysql_query("SELECT * FROM `".$_POST['tablename']."` WHERE `ID` NOT IN (0) AND `removed` != '1' ORDER BY `ID` ASC ");
 	} else {
 	$query = mysql_query("SELECT * FROM `".$_POST['tablename']."` WHERE `ID` NOT IN (".$idcka.") AND `removed` != '1' ORDER BY `ID` ASC ");
 	}
-	while ($vysledky = mysql_fetch_array($query)) {	
+	while ($results = mysql_fetch_array($query)) {
 		$streamitem = array(
-		"id" => $vysledky['ID'],
-		"date" => date("H:i",substr_replace(substr_replace("".$vysledky['ID']."","",-1),"",-1)),
-		"text" => $vysledky['text']
+		"id" => $results['ID'],
+		"date" => date("H:i",substr_replace(substr_replace("".$results['ID']."","",-1),"",-1)),
+		"text" => $results['text']
 		);
 		array_push($jsonwrapper['stream'],$streamitem);
 	}
